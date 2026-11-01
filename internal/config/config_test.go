@@ -29,7 +29,7 @@ func TestRememberAndForgetCredentials(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if info.Mode().Perm() != 0600 {
+		if info.Mode().Perm() != 0o600 {
 			t.Fatalf("credentials permissions: %v", info.Mode())
 		}
 	}
@@ -56,7 +56,7 @@ func TestRememberAndForgetCredentials(t *testing.T) {
 
 func TestMalformedSettingsAreNotSilentlyOverwritten(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "settings.json")
-	if err := os.WriteFile(path, []byte("broken"), 0600); err != nil {
+	if err := os.WriteFile(path, []byte("broken"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := Load(path); err == nil {

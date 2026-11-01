@@ -64,7 +64,7 @@ func Save(path string, settings Settings) error {
 	data, _ := json.MarshalIndent(settings, "", "  ")
 
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0700); err != nil {
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return fmt.Errorf("创建设置目录: %w", err)
 	}
 

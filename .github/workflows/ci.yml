@@ -31,7 +31,8 @@ jobs:
           go-version-file: go.mod
           cache: false
       - run: |
-          gofmt -w .
+          go install mvdan.cc/gofumpt@v0.12.0
+          gofumpt -w .
           git diff --exit-code
 
   test:

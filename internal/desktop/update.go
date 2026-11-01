@@ -14,8 +14,10 @@ import (
 	"golang.org/x/mod/semver"
 )
 
-const repositoryURL = "https://github.com/bitoolkit/biternet-go"
-const latestReleaseURL = "https://api.github.com/repos/bitoolkit/biternet-go/releases/latest"
+const (
+	repositoryURL    = "https://github.com/bitoolkit/biternet-go"
+	latestReleaseURL = "https://api.github.com/repos/bitoolkit/biternet-go/releases/latest"
+)
 
 type release struct {
 	Version string

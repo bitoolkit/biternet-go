@@ -25,7 +25,7 @@ pkgs.buildGo127Module {
     ];
   };
 
-  vendorHash = "sha256-BP9t95VyPHHHdyO91kb+iNS5jB9D0NsqYbxFRY8ilVg=";
+  vendorHash = "sha256-FXQNsT04q7iAg4Aa5BTXEZmCOtwgEkkpTPxikONIn9k=";
   proxyVendor = true;
   env.CGO_ENABLED = 0;
 

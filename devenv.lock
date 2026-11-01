@@ -57,11 +57,11 @@
       "flake": false,
       "locked": {
         "dir": "dotfiles/devenv",
-        "lastModified": 1793535764,
-        "narHash": "sha256-lNlTdWZ/sRiNKAGb/C10erssUZhuBOgHs7wZ3nWVWr8=",
+        "lastModified": 1793555682,
+        "narHash": "sha256-wv3+LRtyktSyQEKgJYyzs/6oP3NhKpsTCJccwUZHq1Q=",
         "owner": "so1ve",
         "repo": "nix-config",
-        "rev": "1f828b3f009e351d9ecf15a7a46aeb30f32e5a47",
+        "rev": "3a0db6361fbef23f68baad57827dbe3c95d1d501",
         "type": "github"
       },
       "original": {

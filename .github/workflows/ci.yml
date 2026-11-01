@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  push:
+    branches: ['**']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -17,6 +19,55 @@ permissions:
   contents: read
 
 jobs:
+  format:
+    name: Go formatting
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: |
+          gofmt -w .
+          git diff --exit-code
+
+  test:
+    name: Go checks (${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-22.04, ubuntu-24.04-arm, macos-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: Install Linux libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-0 libayatana-appindicator3-1 libgl1 fontconfig
+      - name: Check and test
+        run: |
+          go vet ./...
+          go test ./...
+          (cd client && go vet ./... && go test ./...)
+      - name: Check races
+        if: matrix.runner == 'ubuntu-22.04'
+        run: |
+          go test -race ./...
+          (cd client && go test -race ./...)
+
   build:
     uses: ./.github/workflows/build.yml
     with:

@@ -48,23 +48,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgtk-3-0 libayatana-appindicator3-1 libgl1 fontconfig
 
-      - name: Check formatting
-        run: |
-          gofmt -w .
-          git diff --exit-code
-
-      - name: Check and test
-        run: |
-          go vet ./...
-          go test ./...
-          (cd client && go vet ./... && go test ./...)
-
-      - name: Check races
-        if: matrix.target == 'linux-amd64'
-        run: |
-          go test -race ./...
-          (cd client && go test -race ./...)
-
       - name: Build packages
         env:
           PLATFORM: ${{ matrix.platform }}

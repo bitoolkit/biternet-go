@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/bitoolkit/biternet-go/compare/v1.0.0...v1.0.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* bump deps ([36c998b](https://github.com/bitoolkit/biternet-go/commit/36c998b78fb9babee107f96464683a5d8fa3819a))
+
 ## 1.0.0 (2026-11-01)
 
 

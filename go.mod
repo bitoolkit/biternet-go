@@ -2,6 +2,8 @@ module github.com/bitoolkit/biternet-go
 
 go 1.27.3
 
+tool github.com/egoist/mygo/cmd/mygo
+
 require (
 	github.com/bitoolkit/biternet-go/client v0.0.0
 	github.com/egoist/mygo v0.7.4

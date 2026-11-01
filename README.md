@@ -52,7 +52,7 @@ go run .
 生成当前平台的安装包，产物位于 `build/`：
 
 ```sh
-go run github.com/egoist/mygo/cmd/mygo build
+go tool mygo build
 ```
 
 安装后，使用 `--silent` 参数可启动到托盘。

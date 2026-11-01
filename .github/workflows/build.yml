@@ -51,7 +51,7 @@ jobs:
       - name: Build packages
         env:
           PLATFORM: ${{ matrix.platform }}
-        run: go run github.com/egoist/mygo/cmd/mygo build -platform "$PLATFORM"
+        run: go tool mygo build -platform "$PLATFORM"
 
       - name: Collect Linux packages
         if: runner.os == 'Linux'

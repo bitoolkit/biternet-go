@@ -18,8 +18,9 @@ pkgs.buildGo127Module {
       ../main.go
       ../mygo.json
       ../client
-      ../internal
+      (lib.fileset.fileFilter (file: !lib.hasSuffix ".ttf.gz" file.name) ../internal)
       ../resources
+      ../scripts
       ../LICENSE
     ];
   };
@@ -28,11 +29,15 @@ pkgs.buildGo127Module {
   proxyVendor = true;
   env.CGO_ENABLED = 0;
 
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  nativeBuildInputs = [
+    pkgs.makeWrapper
+    (pkgs.python3.withPackages (ps: [ ps.fonttools ]))
+  ];
   nativeCheckInputs = desktopLibraries;
 
   buildPhase = ''
     runHook preBuild
+    go generate ./internal/desktop
     go tool mygo build -platform linux/${arch}
     runHook postBuild
   '';

@@ -43,17 +43,22 @@ macOS 使用 Command 代替 Ctrl。
 
 ## 运行与构建
 
-需要 Go 1.27.3 或更新版本。Linux 还需要 GTK 3、Pango、Cairo 和 Fontconfig。
+需要 Go 1.27.3 或更新版本、Python 3 和 FontTools。Linux 还需要 GTK 3、Pango、Cairo 和 Fontconfig。
 
 ```sh
+python -m pip install -r scripts/requirements.txt
+go generate ./internal/desktop
 go run .
 ```
 
 生成当前平台的安装包，产物位于 `build/`：
 
 ```sh
+go generate ./internal/desktop
 go tool mygo build
 ```
+
+进入 devenv、CI 和 Nix 构建时会自动生成压缩字库，保留 GB2312 和源码中的字符。修改文案后，可用 `go generate ./internal/desktop` 刷新字库。
 
 安装后，使用 `--silent` 参数可启动到托盘。
 

@@ -1,17 +1,25 @@
 package desktop
 
 import (
+	"bytes"
+	"compress/gzip"
 	_ "embed"
 	"fmt"
+	"io"
 	"sync"
 
 	"github.com/egoist/mygo/ui"
 )
 
-//go:embed fonts/Manrope.ttf
+//go:generate python ../../scripts/fonts.py
+
+//go:embed fonts/Manrope.ttf.gz
 var manropeFont []byte
 
-//go:embed fonts/NotoSansSC.ttf
+// Noto Sans SC retains GB2312, application text, and all variable weights.
+// Other characters use the platform's font fallback.
+//
+//go:embed fonts/NotoSansSC.ttf.gz
 var notoSansSCFont []byte
 
 //go:embed tray.png
@@ -27,13 +35,23 @@ var brandImage = func() *ui.Bitmap {
 
 var registerFonts = sync.OnceValue(func() error {
 	for _, font := range []struct {
-		data   []byte
-		family string
+		compressed []byte
+		family     string
 	}{
-		{data: manropeFont, family: "Manrope"},
-		{data: notoSansSCFont, family: "Noto Sans SC"},
+		{compressed: manropeFont, family: "Manrope"},
+		{compressed: notoSansSCFont, family: "Noto Sans SC"},
 	} {
-		if err := ui.RegisterFont(font.data, font.family); err != nil {
+		reader, err := gzip.NewReader(bytes.NewReader(font.compressed))
+		if err != nil {
+			panic(err)
+		}
+		data, err := io.ReadAll(reader)
+		reader.Close()
+		if err != nil {
+			panic(err)
+		}
+
+		if err := ui.RegisterFont(data, font.family); err != nil {
 			return fmt.Errorf("加载字体 %s: %w", font.family, err)
 		}
 	}

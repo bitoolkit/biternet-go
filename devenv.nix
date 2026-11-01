@@ -16,13 +16,20 @@ in
   ]
   ++ lib.optional (builtins.pathExists ./devenv.local.nix) ./devenv.local.nix;
 
-  packages = lib.optionals pkgs.stdenv.isLinux (
+  packages = [
+    (pkgs.python3.withPackages (ps: [ ps.fonttools ]))
+  ]
+  ++ lib.optionals pkgs.stdenv.isLinux (
     desktopLibraries
     ++ [
       pkgs.stdenv.cc
       pkgs.xdg-utils
     ]
   );
+
+  enterShell = ''
+    go generate ./internal/desktop
+  '';
 
   # MyGo loads native libraries at runtime, without linking through CGO.
   env.LD_LIBRARY_PATH = lib.mkIf pkgs.stdenv.isLinux (

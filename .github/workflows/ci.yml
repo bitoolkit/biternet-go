@@ -60,6 +60,8 @@ jobs:
           sudo apt-get install -y libgtk-3-0 libayatana-appindicator3-1 libgl1 fontconfig
       - name: Check and test
         run: |
+          python -m pip install -r scripts/requirements.txt
+          go generate ./internal/desktop
           go vet ./...
           go test ./...
           (cd client && go vet ./... && go test ./...)

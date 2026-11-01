@@ -10,3 +10,4 @@
 /.devenv/
 /.direnv/
 /devenv.local.nix
+/internal/desktop/fonts/*.ttf.gz

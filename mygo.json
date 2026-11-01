@@ -1,7 +1,7 @@
 {
   "name": "BITERNET",
   "identifier": "dev.bitoolkit.biternet-go",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "out": "build",
   "publisher": "bitoolkit",
   "resources": [
@@ -13,7 +13,13 @@
     "webview": false,
     "command": "biternet",
     "comment": "BIT campus network client built with Go and MyGo",
-    "categories": ["Network"],
-    "depends": ["libayatana-appindicator3-1", "libgl1", "xdg-utils"]
+    "categories": [
+      "Network"
+    ],
+    "depends": [
+      "libayatana-appindicator3-1",
+      "libgl1",
+      "xdg-utils"
+    ]
   }
 }

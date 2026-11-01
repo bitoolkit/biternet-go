@@ -1,0 +1,12 @@
+/build/
+/dist/
+/result
+/result-*
+/.mygo/
+/biternet
+/biternet.exe
+/biternet-go
+/biternet-go.exe
+/.devenv/
+/.direnv/
+/devenv.local.nix

@@ -1,0 +1,108 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    name: ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            target: linux-amd64
+            runner: ubuntu-22.04
+          - platform: linux/arm64
+            target: linux-arm64
+            runner: ubuntu-24.04-arm
+          - platform: darwin/universal
+            target: darwin-universal
+            runner: macos-latest
+          - platform: windows/amd64
+            target: windows-amd64
+            runner: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Install Linux libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-0 libayatana-appindicator3-1 libgl1 fontconfig
+
+      - name: Check formatting
+        run: |
+          gofmt -w .
+          git diff --exit-code
+
+      - name: Check and test
+        run: |
+          go vet ./...
+          go test ./...
+          (cd client && go vet ./... && go test ./...)
+
+      - name: Check races
+        if: matrix.target == 'linux-amd64'
+        run: |
+          go test -race ./...
+          (cd client && go test -race ./...)
+
+      - name: Build packages
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: go run github.com/egoist/mygo/cmd/mygo build -platform "$PLATFORM"
+
+      - name: Collect Linux packages
+        if: runner.os == 'Linux'
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          mkdir -p dist
+          cp build/"$TARGET"/*.deb build/"$TARGET"/*.tar.gz dist/
+          expected="BITERNET v$(jq -r .version mygo.json)"
+          test "$(build/"$TARGET"/biternet --version)" = "$expected"
+
+      - name: Collect macOS packages
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p dist
+          cp build/darwin-universal/*.dmg dist/
+          version="$(jq -r .version mygo.json)"
+          tar -czf "dist/biternet-$version-darwin-universal.app.tar.gz" -C build/darwin-universal BITERNET.app
+          test "$(build/darwin-universal/BITERNET.app/Contents/MacOS/BITERNET --version)" = "BITERNET v$version"
+
+      - name: Collect Windows packages
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          $version = (Get-Content mygo.json | ConvertFrom-Json).version
+          $installer = Get-Item "build/windows-amd64/*-setup-*.exe" -ErrorAction Stop
+          Copy-Item $installer dist/
+          $portable = Get-ChildItem build/windows-amd64 -File | Where-Object { $_.Name -notlike '*-setup-*.exe' }
+          Compress-Archive -Path $portable.FullName -DestinationPath "dist/biternet-$version-windows-amd64.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 7

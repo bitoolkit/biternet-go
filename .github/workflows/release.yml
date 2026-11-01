@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    needs: release-please
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.release-please.outputs.desktop_tag || needs.release-please.outputs.client_tag || github.sha }}
+    secrets: inherit
+
+  release-please:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    outputs:
+      desktop_created: ${{ steps.release.outputs.release_created }}
+      desktop_tag: ${{ steps.release.outputs.tag_name }}
+      client_created: ${{ steps.release.outputs['client--release_created'] }}
+      client_tag: ${{ steps.release.outputs['client--tag_name'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+  publish-desktop:
+    needs: [release-please, checks]
+    if: needs.release-please.outputs.desktop_created == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: packages-*
+          path: dist
+          merge-multiple: true
+      - name: Upload and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.release-please.outputs.desktop_tag }}
+        run: |
+          cd dist
+          sha256sum -- * > SHA256SUMS
+          gh release upload "$RELEASE_TAG" --clobber -- *
+          gh release edit "$RELEASE_TAG" --draft=false --latest --title "BITERNET $RELEASE_TAG"
+
+  publish-client:
+    needs: [release-please, checks]
+    if: needs.release-please.outputs.client_created == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Publish client module
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.release-please.outputs.client_tag }}
+        run: gh release edit "$RELEASE_TAG" --draft=false --latest=false --title "BITERNET $RELEASE_TAG"

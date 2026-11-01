@@ -1,0 +1,19 @@
+{
+  "name": "BITERNET",
+  "identifier": "dev.bitoolkit.biternet-go",
+  "version": "0.0.0",
+  "out": "build",
+  "publisher": "bitoolkit",
+  "resources": [
+    "LICENSE",
+    "internal/desktop/fonts/Manrope-OFL.txt",
+    "internal/desktop/fonts/NotoSansSC-OFL.txt"
+  ],
+  "linux": {
+    "webview": false,
+    "command": "biternet",
+    "comment": "BIT campus network client built with Go and MyGo",
+    "categories": ["Network"],
+    "depends": ["libayatana-appindicator3-1", "libgl1", "xdg-utils"]
+  }
+}

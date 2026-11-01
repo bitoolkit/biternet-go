@@ -23,10 +23,10 @@ jobs:
     name: Go formatting
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version-file: go.mod
           cache: false
@@ -46,10 +46,10 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
@@ -78,10 +78,10 @@ jobs:
     name: Client minimum Go version
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version-file: client/go.mod
           cache: false
@@ -102,10 +102,10 @@ jobs:
           - system: aarch64-linux
             runner: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: cachix/install-nix-action@v31
+      - uses: cachix/install-nix-action@v31.11.3
       - uses: cachix/cachix-action@v17
         with:
           name: so1ve

@@ -34,10 +34,10 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
@@ -83,7 +83,7 @@ jobs:
           $portable = Get-ChildItem build/windows-amd64 -File | Where-Object { $_.Name -notlike '*-setup-*.exe' }
           Compress-Archive -Path $portable.FullName -DestinationPath "dist/biternet-$version-windows-amd64.zip"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: packages-${{ matrix.target }}
           path: dist/*

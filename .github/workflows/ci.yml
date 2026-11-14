@@ -12,7 +12,9 @@ on:
         type: string
         default: ""
     secrets:
-      CACHIX_AUTH_TOKEN:
+      ORANC_SIGNING_KEY:
+        required: false
+      GHCR_CACHE_TOKEN:
         required: false
 
 permissions:
@@ -108,11 +110,13 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - uses: cachix/install-nix-action@v31.11.3
-      - uses: cachix/cachix-action@v17
         with:
-          name: so1ve
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          skipPush: ${{ github.event_name == 'pull_request' }}
+          extra_nix_config: accept-flake-config = true
+      - uses: so1ve/nur-packages/.github/actions/setup-cache@main
+        if: github.event_name != 'pull_request'
+        with:
+          signing-key: ${{ secrets.ORANC_SIGNING_KEY }}
+          registry-token: ${{ secrets.GHCR_CACHE_TOKEN }}
       - name: Check Nix formatting and workflows
         if: matrix.system == 'x86_64-linux'
         run: |

@@ -2,9 +2,9 @@
   description = "biternet-go: BIT campus network client built with Go and MyGo";
 
   nixConfig = {
-    extra-substituters = [ "https://so1ve.cachix.org" ];
+    extra-substituters = [ "https://cache.so1ve.dev" ];
     extra-trusted-public-keys = [
-      "so1ve.cachix.org-1:51jcW4FkJhiLcqPsiUx3nglRP469les8F9zjFxio1nw="
+      "cache.so1ve.dev-1:SijyzF9iE/VZwMXgMpd/HrNX9iItDZ1tdiNdeGakQGY="
     ];
   };
 

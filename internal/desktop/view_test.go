@@ -2,6 +2,7 @@ package desktop
 
 import (
 	"context"
+	"image"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -121,6 +122,27 @@ func TestNixStartupSettingsAreReadOnly(t *testing.T) {
 				snapshot(t, tt, name)
 			})
 		}
+	}
+}
+
+func TestWindowCornersAreTransparent(t *testing.T) {
+	for _, theme := range []string{"light", "dark"} {
+		t.Run(theme, func(t *testing.T) {
+			a := testApp(t)
+			a.settings.Theme = theme
+			a.page = "settings"
+
+			frame := ui.Render(a.view, windowWidth, windowHeight, 1.5)
+			width, height := frame.Bounds().Dx(), frame.Bounds().Dy()
+			for _, corner := range []image.Point{{0, 0}, {width - 1, 0}, {0, height - 1}, {width - 1, height - 1}} {
+				if alpha := frame.RGBAAt(corner.X, corner.Y).A; alpha != 0 {
+					t.Errorf("corner %v has alpha %d, want 0", corner, alpha)
+				}
+			}
+			if alpha := frame.RGBAAt(width/2, 0).A; alpha != 255 {
+				t.Errorf("top edge has alpha %d, want 255", alpha)
+			}
+		})
 	}
 }
 

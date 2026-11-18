@@ -134,8 +134,7 @@ func Run(silent bool) error {
 			DisableResize:     true,
 			DisableMaximize:   true,
 			DisableFullScreen: true,
-			CornerRadius:      10,
-			BackgroundColor:   "light-dark(#fafafa, #222222)",
+			Transparent:       true,
 			Content:           ui.View(a.view),
 		})
 		a.win.OnClose(func(e *mygo.CloseEvent) {

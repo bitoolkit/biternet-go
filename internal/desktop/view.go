@@ -16,6 +16,7 @@ func (a *app) view(c *ui.Context) {
 
 	theme := appTheme(dark)
 	c.SetTheme(theme)
+	c.Root().Background(ui.Transparent)
 
 	ui.Column(c).Fill().
 		Background(theme.Background).

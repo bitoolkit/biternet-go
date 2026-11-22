@@ -111,7 +111,7 @@ jobs:
       - uses: cachix/install-nix-action@v31.11.3
         with:
           extra_nix_config: accept-flake-config = true
-      - uses: so1ve/firn@main
+      - uses: so1ve/firn@v1
         with:
           server: https://cache.so1ve.dev
       - name: Check Nix formatting and workflows
@@ -121,4 +121,4 @@ jobs:
           git diff --exit-code
           nix run --inputs-from . nixpkgs#actionlint -- -color
           nix flake check --all-systems --no-build
-      - run: nix build ".#packages.${{ matrix.system }}.default" --print-build-logs
+      - run: nix build ".#packages.${{ matrix.system }}.default" --print-build-logs --print-out-paths >> "$FIRN_PATHS_FILE"

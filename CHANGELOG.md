@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/bitoolkit/biternet-go/compare/v1.0.0...v1.0.1) (2026-11-22)
+
+
+### Bug Fixes
+
+* bump deps ([36c998b](https://github.com/bitoolkit/biternet-go/commit/36c998b78fb9babee107f96464683a5d8fa3819a))
+* make window corners transparent ([39990eb](https://github.com/bitoolkit/biternet-go/commit/39990eb63eef510c3de67c5e525542e92234377c))
+
 ## 1.0.0 (2026-11-01)
 
 

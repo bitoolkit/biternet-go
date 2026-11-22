@@ -16,10 +16,13 @@ jobs:
   checks:
     needs: release-please
     if: needs.release-please.outputs.desktop_created == 'true' || needs.release-please.outputs.client_created == 'true'
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ needs.release-please.outputs.desktop_tag || needs.release-please.outputs.client_tag }}
-    secrets: inherit
 
   release-please:
     runs-on: ubuntu-24.04

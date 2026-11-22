@@ -11,11 +11,6 @@ on:
       ref:
         type: string
         default: ""
-    secrets:
-      ORANC_SIGNING_KEY:
-        required: false
-      GHCR_CACHE_TOKEN:
-        required: false
 
 permissions:
   contents: read
@@ -96,6 +91,10 @@ jobs:
 
   nix:
     name: Nix (${{ matrix.system }})
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -112,11 +111,9 @@ jobs:
       - uses: cachix/install-nix-action@v31.11.3
         with:
           extra_nix_config: accept-flake-config = true
-      - uses: so1ve/nur-packages/.github/actions/setup-cache@main
-        if: github.event_name != 'pull_request'
+      - uses: so1ve/firn@main
         with:
-          signing-key: ${{ secrets.ORANC_SIGNING_KEY }}
-          registry-token: ${{ secrets.GHCR_CACHE_TOKEN }}
+          server: https://cache.so1ve.dev
       - name: Check Nix formatting and workflows
         if: matrix.system == 'x86_64-linux'
         run: |
